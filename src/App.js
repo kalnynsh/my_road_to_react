@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const DEFAULT_QUERY = 'redux';
+
+const PATH_BASE = 'http://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+
 const largeColumn = {
   width: '40%',
 };
