@@ -53,7 +53,7 @@ const Table = ({ list, pattern, onDismiss }) => (
       list.filter(isSearched(pattern)).map(item => (
         <div key={item.objectID} className="table-row">
           <span style={largeColumn}>
-            <a href="{item.url}">{item.title}</a>
+            <a href={item.url}>{item.title}</a>
           </span>
           <span style={midColumn}>
             {item.author}
@@ -125,10 +125,6 @@ class App extends Component
   render() {
     const { searchTerm, result } = this.state;
 
-    if (!result) {
-      return null;
-    }
-
     return (
       <div className="page">
         <div className="interactions">
@@ -139,11 +135,13 @@ class App extends Component
             Search
           </Search>
         </div>
-        <Table
-          list={result.hits}
-          pattern={searchTerm}
-          onDismiss={this.onDismiss}
-        />
+        { result &&
+          <Table
+            list={result.hits}
+            pattern={searchTerm}
+            onDismiss={this.onDismiss}
+          />
+        }
       </div>
     );
   }
