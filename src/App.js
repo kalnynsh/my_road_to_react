@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import ErrorBoundary from './Components/ErrorBoundary';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
-const DEFAULT_HPP = '50';
+const DEFAULT_HPP = '20';
 
 const PATH_BASE = 'http://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
@@ -95,6 +96,7 @@ class App extends Component
       results: null,
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
+      error: null,
     };
 
     this.needToSearchTopStories = this.needToSearchTopStories.bind(this);
@@ -131,7 +133,7 @@ class App extends Component
         &${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result))
-      .catch(error => error);
+      .catch(error => this.setState({ error }));
   }
 
   onSearchChange(event) {
@@ -173,7 +175,8 @@ class App extends Component
     const {
       searchTerm,
       results,
-      searchKey
+      searchKey,
+      error
     } = this.state;
 
     const page = (
@@ -195,12 +198,19 @@ class App extends Component
             Search
           </Search>
         </div>
-        { results &&
-          <Table
-            list={list}
-            onDismiss={this.onDismiss}
-          />
-        }
+        <ErrorBoundary>
+          <div className="interactions">
+            { error
+              ? <div className="interactions">
+                  <p>Something went wrong.</p>
+                </div>
+              : <Table
+                list={list}
+                onDismiss={this.onDismiss}
+              />
+            }
+          </div>
+        </ErrorBoundary>
         <div className="interactions">
           <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
             More
