@@ -5,7 +5,7 @@ import './App.css';
 const DEFAULT_QUERY = 'redux';
 const DEFAULT_HPP = '20';
 
-const PATH_BASE = 'http://hn.algolia.com/api/v1';
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
@@ -53,7 +53,6 @@ const Button = ({
     {children}
   </button>
 );
-
 
 const Table = ({ list, onDismiss }) => (
   <div className="table">
@@ -138,6 +137,18 @@ class App extends Component
       .catch(error => this._isMounted && this.setState({ error }));
   }
 
+  componentDidMount() {
+    const { searchTerm } = this.state;
+
+    this._isMounted = true;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
   }
@@ -165,18 +176,6 @@ class App extends Component
         [searchKey]: { hits: updatedHits, page }
       }
     });
-  }
-
-  componentDidMount() {
-    const { searchTerm } = this.state;
-
-    this._isMounted = true;
-    this.setState({ searchKey: searchTerm });
-    this.fetchSearchTopStories(searchTerm);
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
   }
 
   render() {
